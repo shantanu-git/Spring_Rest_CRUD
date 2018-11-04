@@ -2,6 +2,7 @@ package com.probrains.io.rest;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.probrains.io.entity.UserDetails;
+import com.probrains.io.entity.UserResponse;
 import com.probrains.io.service.UserService;
 
 @RestController
@@ -21,17 +23,22 @@ public class UserRestController {
 	private UserService userService;
 
 	@GetMapping("/users")
-	public List<UserDetails> getListOfCustomers() {
+	public List<UserDetails> getListOfCustomers() {	
 		return userService.getUsers();
 	}
 
 	@GetMapping("/users/{userId}")
-	public UserDetails getUserById(@PathVariable int userId) {
+	public UserResponse getUserById(@PathVariable int userId) {
 		UserDetails theUserDetails = userService.getUser(userId);
+		UserResponse theUserResponse  = null;
 		if (theUserDetails == null) {
-			throw new UserNotFoundException("User id not found: " + userId);
+			String message = "User id not found: " + userId;
+			theUserResponse = new UserResponse(HttpStatus.NOT_FOUND.value(), true, System.currentTimeMillis(), message,null);
 		}
-		return theUserDetails;
+		else {
+			theUserResponse = new UserResponse(HttpStatus.OK.value(), false, System.currentTimeMillis(), "Success", theUserDetails);
+		}
+		return theUserResponse;
 	}
 
 	@PostMapping("/users")
@@ -47,13 +54,19 @@ public class UserRestController {
 	}
 
 	@DeleteMapping("/users/{userId}")
-	public String deleteUser(@PathVariable int userId) {
+	public UserResponse deleteUser(@PathVariable int userId) {
 		UserDetails theUserDetails = userService.getUser(userId);
-
+		UserResponse theUserResponse  = null;
 		if (theUserDetails == null) {
-			throw new UserNotFoundException("User id not found: " + userId);
+			String message = "User id not found: " + userId;
+			theUserResponse = new UserResponse(HttpStatus.NOT_FOUND.value(), true, System.currentTimeMillis(), message,null);
 		}
-		userService.delete(userId);
-		return "Delete user id is : " + userId;
+		else {
+			userService.delete(userId);
+			String message = "Delete user id is : " + userId;
+			theUserResponse = new UserResponse(HttpStatus.OK.value(), false, System.currentTimeMillis(), message,null);
+		}
+		
+		return theUserResponse;
 	}
 }

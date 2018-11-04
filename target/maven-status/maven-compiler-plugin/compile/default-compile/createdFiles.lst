@@ -1,3 +1,4 @@
+com\probrains\io\entity\UserResponse.class
 com\probrains\io\service\UserServiceImpl.class
 com\probrains\io\dao\UserDAOImpl.class
 com\probrains\io\entity\UserDetails.class
