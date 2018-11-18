@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="user_details")
-public class UserDetails {
+public class UserDetails implements EOEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -73,5 +73,4 @@ public class UserDetails {
 		return "UserDetails [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNo="
 				+ phoneNo + ", emailId=" + emailId + "]";
 	}
-
 }

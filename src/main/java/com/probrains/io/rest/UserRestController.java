@@ -16,27 +16,28 @@ import com.probrains.io.entity.UserResponse;
 import com.probrains.io.service.UserService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/userapi")
 public class UserRestController {
 
 	@Autowired
 	private UserService userService;
 
 	@GetMapping("/users")
-	public List<UserDetails> getListOfCustomers() {	
+	public List<UserDetails> getListOfCustomers() {
 		return userService.getUsers();
 	}
-
+	
 	@GetMapping("/users/{userId}")
-	public UserResponse getUserById(@PathVariable int userId) {
+	public UserResponse<UserDetails> getUserById(@PathVariable int userId) {
 		UserDetails theUserDetails = userService.getUser(userId);
-		UserResponse theUserResponse  = null;
+		UserResponse<UserDetails> theUserResponse = null;
 		if (theUserDetails == null) {
 			String message = "User id not found: " + userId;
-			theUserResponse = new UserResponse(HttpStatus.NOT_FOUND.value(), true, System.currentTimeMillis(), message,null);
-		}
-		else {
-			theUserResponse = new UserResponse(HttpStatus.OK.value(), false, System.currentTimeMillis(), "Success", theUserDetails);
+			theUserResponse = new UserResponse<UserDetails>(HttpStatus.NOT_FOUND.value(), true, System.currentTimeMillis(), message,
+					null);
+		} else {
+			theUserResponse = new UserResponse<UserDetails>(HttpStatus.OK.value(), false, System.currentTimeMillis(), "Success",
+					theUserDetails);
 		}
 		return theUserResponse;
 	}
@@ -54,19 +55,19 @@ public class UserRestController {
 	}
 
 	@DeleteMapping("/users/{userId}")
-	public UserResponse deleteUser(@PathVariable int userId) {
+	public UserResponse<UserDetails> deleteUser(@PathVariable int userId) {
 		UserDetails theUserDetails = userService.getUser(userId);
-		UserResponse theUserResponse  = null;
+		UserResponse<UserDetails> theUserResponse = null;
 		if (theUserDetails == null) {
 			String message = "User id not found: " + userId;
-			theUserResponse = new UserResponse(HttpStatus.NOT_FOUND.value(), true, System.currentTimeMillis(), message,null);
-		}
-		else {
+			theUserResponse = new UserResponse<UserDetails>(HttpStatus.NOT_FOUND.value(), true, System.currentTimeMillis(), message,
+					null);
+		} else {
 			userService.delete(userId);
 			String message = "Delete user id is : " + userId;
-			theUserResponse = new UserResponse(HttpStatus.OK.value(), false, System.currentTimeMillis(), message,null);
+			theUserResponse = new UserResponse<UserDetails>(HttpStatus.OK.value(), false, System.currentTimeMillis(), message, null);
 		}
-		
+
 		return theUserResponse;
 	}
 }

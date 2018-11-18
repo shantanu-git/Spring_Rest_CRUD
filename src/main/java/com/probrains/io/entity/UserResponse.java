@@ -1,14 +1,14 @@
 package com.probrains.io.entity;
 
-public class UserResponse {
+public class UserResponse<T> {
 
 	private int status;
 	private boolean isError;
 	private long timestamp;
 	private String message;
-	private UserDetails data;
+	private T data;
 	
-	public UserResponse(int status, boolean isError, long timestamp,String message, UserDetails data) {
+	public UserResponse(int status, boolean isError, long timestamp,String message, T data) {
 		this.status = status;
 		this.isError = isError;
 		this.timestamp = timestamp;
@@ -40,11 +40,11 @@ public class UserResponse {
 		this.timestamp = timestamp;
 	}
 
-	public UserDetails getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(UserDetails data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 
